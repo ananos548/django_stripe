@@ -8,3 +8,6 @@ class Item(models.Model):
 
     def get_display_price(self):
         return f'{self.price / 100:02}'
+
+    def __str__(self):
+        return f'{self.name}'
