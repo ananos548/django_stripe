@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+  </head>
+ <body>
+    <section>
+      <div class="product">
+        <div class="description">
+            <h2>{{ item.name }}</h2>
+            <h3>{{ item.description }}</h3>
+            <h5>{{ item.get_display_price }}$</h5>
+        </div>
+      </div>
+      <button class="button is-primary" id="submitBtn">Purchase!</button>
+    </section>
+
+  </body>
+<script>
+    console.log("Sanity check!");
+var itemId = {{ item.id }};
+// Get Stripe publishable key
+fetch("/config/")
+.then((result) => { return result.json(); })
+.then((data) => {
+  // Initialize Stripe.js
+  const stripe = Stripe(data.publicKey);
+
+  // new
+  // Event handler
+  document.querySelector("#submitBtn").addEventListener("click", () => {
+    // Get Checkout Session ID
+fetch("http://127.0.0.1:8000/buy/" + itemId)
+
+    .then((result) => {
+console.log(result);
+return result.json();
+})
+     .then(function (session) {
+      return stripe.redirectToCheckout({ sessionId: session.id });
+    })
+    .catch((error) => {
+    console.error("An error occurred:", error);
+    })
+.then((res) => {
+  console.log(res);
+});
+  });
+});
+</script>
+</html>
